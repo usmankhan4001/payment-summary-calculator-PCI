@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Install Payment Calculator</title>
+    <script src="//api.bitrix24.com/api/v1/"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; text-align: center; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; background: #003366; color: white; border: none; border-radius: 4px; }
+        button:hover { background: #002244; }
+        #status { margin-top: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Install Payment Calculator</h1>
+    <p>Click the button below to add this calculator as a tab in the <b>Lead</b> details.</p>
+    
+    <label for="appUrl">Deployed App URL:</label><br>
+    <input type="text" id="appUrl" style="width: 300px; padding: 5px; margin: 10px;" value="https://calculator-payment-sumamry.premierchoiceint.online/">
+    <br><br>
+
+    <button onclick="installPlacement()">Install to Lead Tab</button>
+    <div id="status"></div>
+
+    <script>
+        function installPlacement() {
+            var url = document.getElementById('appUrl').value;
+            if (!url.endsWith('/')) {
+                url += '/'; // Ensure trailing slash or full path to index.html
+            }
+            // If the user didn't point to index.html explicitly, assume root is the app
+            // However, for placement handler, it usually needs the full path if not root.
+            // But 'https://...online/' is fine if index.html is default.
+            
+            var handlerUrl = url; 
+            var title = "Payment Calculator";
+            var description = "Calculates payment plans and generates PDFs";
+
+            document.getElementById('status').innerText = "Installing...";
+
+            BX24.init(function() {
+                BX24.callMethod(
+                    'placement.bind',
+                    {
+                        PLACEMENT: 'CRM_LEAD_DETAIL_TAB',
+                        HANDLER: handlerUrl,
+                        TITLE: title,
+                        DESCRIPTION: description
+                    },
+                    function(result) {
+                        if (result.error()) {
+                            console.error(result.error());
+                            document.getElementById('status').innerText = "Error: " + result.error();
+                        } else {
+                            console.log(result.data());
+                            document.getElementById('status').innerText = "Success! The tab has been added to Leads.";
+                        }
+                    }
+                );
+            });
+        }
+    </script>
+</body>
+</html>
