@@ -1,0 +1,107 @@
+/* Google Fonts Import (optional to keep in CSS, but usually in HTML) */
+/* We keep the font definition here */
+
+:root {
+    --pci-blue: #003366;
+    --pci-gold: #D4AF37;
+    --b24-blue: #00a2e8;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.bg-pci-blue { background-color: var(--pci-blue); }
+.text-pci-gold { color: var(--pci-gold); }
+
+.btn-primary {
+    background-image: linear-gradient(to right, var(--pci-gold), #e6c25e);
+    color: var(--pci-blue);
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px 0 rgba(212, 175, 55, 0.3);
+}
+
+.btn-primary:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 20px 0 rgba(212, 175, 55, 0.4);
+}
+
+.btn-whatsapp {
+    background-color: #25D366;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px 0 rgba(37, 211, 102, 0.3);
+}
+
+.btn-whatsapp:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 20px 0 rgba(37, 211, 102, 0.4);
+}
+
+.btn-bitrix24 {
+    background-color: var(--b24-blue);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px 0 rgba(0, 162, 232, 0.3);
+}
+
+.btn-bitrix24:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 20px 0 rgba(0, 162, 232, 0.4);
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.summary-card {
+    background-color: #ffffff;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    border: 1px solid #e5e7eb;
+    position: relative;
+    overflow: hidden;
+}
+
+.summary-card:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background-image: linear-gradient(to right, var(--pci-gold), #e6c25e);
+}
+
+.summary-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+.summary-card-value {
+    color: var(--pci-blue);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.fade-in {
+    animation: fadeInAnimation 0.8s ease-in-out forwards;
+}
+
+@keyframes fadeInAnimation {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Hide number input spinners */
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}

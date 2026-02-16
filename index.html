@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Premier Choice - Universal Payment Calculator</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <script src="//api.bitrix24.com/api/v1/"></script>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="bg-slate-100">
+    <div class="w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 fade-in">
+      <div id="calculator-interface" class="bg-white rounded-2xl shadow-2xl">
+        <div
+          id="mobile-tabs"
+          class="lg:hidden flex border-b bg-slate-50 rounded-t-2xl"
+        >
+          <button
+            id="tab-calc"
+            class="flex-1 p-4 text-sm font-bold uppercase tracking-wider text-pci-blue border-b-2 border-pci-blue"
+          >
+            Calculator
+          </button>
+          <button
+            id="tab-summary"
+            class="flex-1 p-4 text-sm font-bold uppercase tracking-wider text-gray-500"
+          >
+            Summary
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 items-start">
+          <div
+            id="left-panel"
+            class="lg:col-span-4 bg-pci-blue p-6 lg:p-12 flex flex-col relative z-20 lg:sticky lg:rounded-l-2xl"
+          >
+            <div class="hidden lg:block mb-auto">
+              <h1 class="text-3xl font-extrabold text-white">
+                Premier Choice
+                <span class="text-pci-gold font-semibold block mt-1"
+                  >Payment Plan Calculator</span
+                >
+              </h1>
+            </div>
+
+            <div class="space-y-6 lg:mt-8">
+              <div>
+                <label
+                  for="project-name"
+                  class="block text-sm font-medium text-gray-300 mb-2"
+                  >Project Name</label
+                >
+                <select
+                  id="project-name"
+                  class="w-full p-3 bg-white/10 border-2 border-white/20 rounded-lg text-white focus:ring-pci-gold focus:border-pci-gold transition"
+                >
+                  <option value="" class="text-black">
+                    Loading Projects...
+                  </option>
+                </select>
+              </div>
+
+              <div id="inventory-unit-container" class="hidden">
+                <label
+                  for="inventory-unit-select"
+                  class="block text-sm font-medium text-gray-300 mb-2"
+                  >Select Unit</label
+                >
+                <select
+                  id="inventory-unit-select"
+                  class="w-full p-3 bg-white/10 border-2 border-white/20 rounded-lg text-white focus:ring-pci-gold focus:border-pci-gold transition"
+                ></select>
+              </div>
+              <div>
+                <label
+                  for="client-name"
+                  class="block text-sm font-medium text-gray-300 mb-2"
+                  >Client Name</label
+                >
+                <input
+                  type="text"
+                  id="client-name"
+                  placeholder="Enter client's name"
+                  class="w-full p-3 bg-white/10 border-2 border-white/20 rounded-lg text-white focus:ring-pci-gold focus:border-pci-gold transition"
+                  disabled
+                />
+              </div>
+              <div>
+                <label
+                  for="property-type"
+                  class="block text-sm font-medium text-gray-300 mb-2"
+                  >Property Type</label
+                >
+                <select
+                  id="property-type"
+                  class="w-full p-3 bg-white/10 border-2 border-white/20 rounded-lg text-white focus:ring-pci-gold focus:border-pci-gold transition"
+                ></select>
+              </div>
+              <div>
+                <label
+                  for="property-category"
+                  class="block text-sm font-medium text-gray-300 mb-2"
+                  >Property Category</label
+                >
+                <select
+                  id="property-category"
+                  class="w-full p-3 bg-white/10 border-2 border-white/20 rounded-lg text-white focus:ring-pci-gold focus:border-pci-gold transition"
+                ></select>
+              </div>
+              <div>
+                <label
+                  for="property-item"
+                  class="block text-sm font-medium text-gray-300 mb-2"
+                  >Property Item</label
+                >
+                <select
+                  id="property-item"
+                  class="w-full p-3 bg-white/10 border-2 border-white/20 rounded-lg text-white focus:ring-pci-gold focus:border-pci-gold transition"
+                ></select>
+              </div>
+
+              <div>
+                <label
+                  for="total-price"
+                  class="block text-sm font-medium text-gray-300 mb-2"
+                  >Total Price (PKR)</label
+                >
+                <input
+                  type="text"
+                  id="total-price"
+                  class="w-full p-3 bg-white/10 border-2 border-white/20 rounded-lg font-semibold text-white focus:ring-pci-gold focus:border-pci-gold transition"
+                  disabled
+                />
+              </div>
+
+              <div>
+                <label
+                  for="gross-area"
+                  class="block text-sm font-medium text-gray-300 mb-2"
+                  >Gross Area</label
+                >
+                <input
+                  type="text"
+                  id="gross-area"
+                  class="w-full p-3 bg-white/10 border-2 border-white/20 rounded-lg font-semibold text-white focus:ring-pci-gold focus:border-pci-gold transition"
+                  disabled
+                />
+              </div>
+
+              <div>
+                <label
+                  for="base-rate"
+                  class="block text-sm font-medium text-gray-300 mb-2"
+                  >Base Rate</label
+                >
+                <input
+                  type="text"
+                  id="base-rate"
+                  class="w-full p-3 bg-white/10 border-2 border-white/20 rounded-lg font-semibold text-white focus:ring-pci-gold focus:border-pci-gold transition"
+                  disabled
+                />
+              </div>
+
+              <!-- <div>
+                            <label for="calculation-mode" class="block text-sm font-medium text-gray-300 mb-2">Calculation Mode</label>
+                            <select id="calculation-mode" class="w-full p-3 bg-white/10 border-2 border-white/20 rounded-lg text-white focus:ring-pci-gold focus:border-pci-gold transition">
+                                <option value="plot-size" class="text-black">By Plot Size (DHA)</option>
+                                <option value="custom-area" class="text-black">By Custom Area</option>
+                            </select>
+                        </div> -->
+              <div>
+                <label
+                  for="payment-condition"
+                  class="block text-sm font-medium text-gray-300 mb-2"
+                  >Payment Condition</label
+                >
+                <select
+                  id="payment-condition"
+                  class="w-full p-3 bg-white/10 border-2 border-white/20 rounded-lg text-white focus:ring-pci-gold focus:border-pci-gold transition"
+                >
+                  <option value="installment" class="text-black">
+                    Installment Plan
+                  </option>
+                  <option value="full" class="text-black">Full Payment</option>
+                </select>
+              </div>
+
+              <div id="installment-options-container" class="space-y-6">
+                <div>
+                  <label
+                    for="downpayment-percentage"
+                    class="block text-sm font-medium text-gray-300 mb-2"
+                    >Down Payment (%)</label
+                  >
+                  <input
+                    type="number"
+                    id="downpayment-percentage"
+                    value="50"
+                    min="30"
+                    max="100"
+                    class="w-full p-3 bg-white/10 border-2 border-white/20 rounded-lg text-white focus:ring-pci-gold focus:border-pci-gold transition"
+                  />
+                </div>
+                <div id="possession-container">
+                  <label
+                    for="possession-percentage"
+                    class="block text-sm font-medium text-gray-300 mb-2"
+                    >On Possession (%)</label
+                  >
+                  <select
+                    id="possession-percentage"
+                    class="w-full p-3 bg-white/10 border-2 border-white/20 rounded-lg text-white focus:ring-pci-gold focus:border-pci-gold transition"
+                  >
+                    <option value="10" class="text-black">10%</option>
+                    <option value="20" class="text-black">20%</option>
+                  </select>
+                </div>
+                <div>
+                  <label
+                    for="installment-duration"
+                    class="block text-sm font-medium text-gray-300 mb-2"
+                    >Installment Plan</label
+                  >
+                  <select
+                    id="installment-duration"
+                    class="w-full p-3 bg-white/10 border-2 border-white/20 rounded-lg text-white focus:ring-pci-gold focus:border-pci-gold transition"
+                  >
+                    <option value="6" class="text-black">6 Months</option>
+                    <option value="12" class="text-black">1 Year</option>
+                    <option value="24" class="text-black">2 Years</option>
+                    <option value="36" class="text-black">3 Years</option>
+                  </select>
+                </div>
+              </div>
+
+              <div id="custom-area-inputs" class="hidden space-y-6">
+                <div>
+                  <label
+                    for="net-area"
+                    class="block text-sm font-medium text-gray-300 mb-2"
+                    >Net Area (Square Feet)</label
+                  >
+                  <input
+                    type="number"
+                    id="net-area"
+                    placeholder="e.g., 523.9"
+                    class="w-full p-3 bg-white/10 border-2 border-white/20 rounded-lg text-white focus:ring-pci-gold focus:border-pci-gold transition"
+                  />
+                </div>
+                <div>
+                  <label
+                    for="per-sq-ft-price"
+                    class="block text-sm font-medium text-gray-300 mb-2"
+                    >Price Per Square Foot (PKR)</label
+                  >
+                  <input
+                    type="number"
+                    id="per-sq-ft-price"
+                    placeholder="e.g., 20500"
+                    class="w-full p-3 bg-white/10 border-2 border-white/20 rounded-lg text-white focus:ring-pci-gold focus:border-pci-gold transition"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="mt-10 pt-8 border-t border-white/10 flex flex-col gap-3"
+            >
+              <button
+                id="menu-attach-lead"
+                class="flex items-center justify-center w-full px-4 py-4 bg-pci-gold text-pci-blue rounded-xl font-bold hover:bg-white transition shadow-lg group"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 mr-3"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
+                  />
+                </svg>
+                Attach to Lead
+              </button>
+
+              <button
+                id="menu-download-pdf"
+                class="flex items-center justify-center w-full px-4 py-4 bg-white/10 border-2 border-white/20 text-white rounded-xl font-bold hover:bg-white/20 transition group"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 mr-3"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                  />
+                </svg>
+                Download PDF
+              </button>
+            </div>
+          </div>
+
+          <div
+            id="right-panel"
+            class="hidden lg:block lg:col-span-8 p-6 lg:p-12"
+          >
+            <h3 class="text-2xl font-bold text-pci-blue mb-6">
+              Payment Summary
+            </h3>
+            <div
+              id="summary-cards-container"
+              class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10"
+            >
+              <div class="summary-card sm:col-span-3">
+                <div class="flex items-center text-gray-500 font-semibold">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 mr-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v.01"
+                    /></svg
+                  >Total Price
+                </div>
+                <div
+                  id="summary-total-price"
+                  class="summary-card-value mt-2"
+                ></div>
+              </div>
+              <div id="downpayment-card" class="summary-card">
+                <div class="flex items-center text-gray-500 font-semibold">
+                  <span id="downpayment-label">Downpayment</span>
+                </div>
+                <div
+                  id="summary-downpayment"
+                  class="summary-card-value mt-2"
+                ></div>
+              </div>
+              <div id="possession-card" class="summary-card">
+                <div class="flex items-center text-gray-500 font-semibold">
+                  <span id="possession-label">On Possession</span>
+                </div>
+                <div
+                  id="summary-possession-amount"
+                  class="summary-card-value mt-2"
+                ></div>
+              </div>
+              <div id="remaining-card" class="summary-card">
+                <div class="flex items-center text-gray-500 font-semibold">
+                  For Installments
+                </div>
+                <div
+                  id="summary-remaining"
+                  class="summary-card-value mt-2"
+                ></div>
+              </div>
+              <div id="installments-no-card" class="summary-card">
+                <div class="flex items-center text-gray-500 font-semibold">
+                  No. of Installments
+                </div>
+                <div
+                  id="summary-installments-no"
+                  class="summary-card-value mt-2"
+                >
+                  6
+                </div>
+              </div>
+              <div
+                id="installment-amount-card"
+                class="summary-card sm:col-span-2"
+              >
+                <div class="flex items-center text-gray-500 font-semibold">
+                  Amount Per Installment
+                </div>
+                <div
+                  id="summary-installment"
+                  class="summary-card-value mt-2"
+                ></div>
+              </div>
+            </div>
+
+            <div id="installment-plan-container">
+              <h3 class="text-2xl font-bold text-pci-blue mb-6">
+                Installment Plan
+              </h3>
+              <div
+                class="overflow-hidden rounded-lg border border-gray-200 shadow-sm max-h-[800px] overflow-y-auto"
+              >
+                <table class="min-w-full bg-white">
+                  <thead class="bg-slate-50 sticky top-0">
+                    <tr>
+                      <th
+                        class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider"
+                      >
+                        Installment No.
+                      </th>
+                      <th
+                        class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider"
+                      >
+                        Amount
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    id="installment-table-body"
+                    class="divide-y divide-gray-200"
+                  ></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
